@@ -6,17 +6,18 @@
 > We are aiming to deploy this system in high-traffic areas, like airports, where security and efficiency are of the utmost importance.
 
 ## Key Features
-• **Secure Sign-In:** Robust authentication to protect your account.
-• **Real-Time Availability:** See what's open and ready to book.
-• **Data Protection:** Encrypted storage for your personal information.
-• **Smooth Payments:** Seamless payment integration for fast, easy transactions
+- **Authentication & Security:** Implemented advanced multi-factor authentication (MFA) and data encryption to protect user identities and secure vehicle rental transactions, addressing risks like identity theft and vehicle misuse.
+- **Real-Time Availability Tracking:** Continuously monitor the availability of vehicles and equipment, ensuring efficient rental management, especially in high-demand locations like airports.
+- **Auditing & Compliance:** Maintain detailed system logs to track all transactions and activities, enabling thorough auditing and ensuring regulatory compliance.
+- **Data Protection:** Utilize a robust database management system to securely store and control access to customer and rental data, safeguarding confidentiality and integrity.
+- **Payment Integration:** Integrate with payment systems to facilitate efficient and secure transactions between users and the rental service.
 
 ## Technology Stack
-• **Frontend:**
-• **Backend:**
-• **Database:**
-• **Cloud:**
-• **Security:**
-• **Containerization:**
+- **Frontend:**
+- **Backend:**
+- **Database:**
+- **Cloud:**
+- **Security:**
+- **Containerization:**
 
 ## System Architecture
