@@ -15,7 +15,7 @@
 ## Technology Stack
 - **Frontend:**
 - **Backend:**
-- **Database:**
+- **Database:** SQLite
 - **Cloud:**
 - **Security:**
 - **Containerization:**
