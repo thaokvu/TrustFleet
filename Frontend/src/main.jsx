@@ -9,6 +9,7 @@ import Login from './components/Login'
 import Signup from './components/Signup'
 import Browse from './components/Browse'
 import Bookings from './components/Bookings'
+import Homepage from './components/Homepage'
 
 const theme = createTheme({})
 
@@ -18,8 +19,8 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "home",
-        element: <></>,
+        path: "",
+        element: <Homepage />,
       },
       {
         path: "login",

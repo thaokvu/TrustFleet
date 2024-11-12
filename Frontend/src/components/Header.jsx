@@ -33,7 +33,7 @@ export default function Header() {
           textAlign: 'center',
         }}
         >
-          <NavbarItem path="/home" text="Home" />
+          <NavbarItem path="/" text="Home" />
           <NavbarItem path="/login" text="Login" />
           <NavbarItem path="/signup" text="Signup" />
           <NavbarItem path="/browse" text="Browse" />
