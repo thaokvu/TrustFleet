@@ -51,7 +51,7 @@ export default function Signup() {
             <TextField
               type="text"
               value={lastName}
-              placeholder="John"
+              placeholder="Doe"
               onChange={(e) => setLastName(e.target.value)}
               fullWidth
             />
@@ -61,7 +61,7 @@ export default function Signup() {
             <TextField
               type="tel"
               value={phoneNumber}
-              placeholder="John"
+              placeholder="123-456-7890"
               onChange={(e) => setPhoneNumber(e.target.value)}
               fullWidth
             />
