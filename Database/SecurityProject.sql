@@ -28,9 +28,9 @@ CREATE TABLE IF NOT EXISTS RentalRecord (
     ReturnCondition TEXT, -- Nullable, as ongoing rentals won't have a return condition
     FK_Cus INTEGER,
     FK_Vehicle INTEGER,
-    Status TEXT DEFAULT 'Active' CHECK Status in ('Active','Completed'), -- New column to track if the rental is ongoing ('Active') or completed ('Completed')
+    Status TEXT DEFAULT 'Active' CHECK (Status IN ('Active', 'Completed')), -- Modified CHECK constraint
     FOREIGN KEY (FK_Cus) REFERENCES Customer(custID),
-    FOREIGN KEY (FK_Vehicle) REFERENCES Vehicle(VIM)
+    FOREIGN KEY (FK_Vehicle) REFERENCES Vehicle(VIN)
 );
 CREATE TABLE IF NOT EXISTS Vehicle (
     VIN INTEGER PRIMARY KEY,
