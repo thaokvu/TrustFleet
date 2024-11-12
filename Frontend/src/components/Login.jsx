@@ -5,6 +5,11 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    // TODO
+  }
+
   return (
     <Box sx={{
       display: 'flex',
@@ -16,7 +21,9 @@ export default function Login() {
         p: 2,
         boxShadow: 2,
       }}>
-        <Box sx={{
+        <Box component="form"
+          onSubmit={handleSubmit}
+        sx={{
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
