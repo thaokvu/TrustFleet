@@ -1,5 +1,6 @@
 import { AppBar, Container, Typography, Toolbar } from "@mui/material";
 import { NavLink } from "react-router-dom";
+import PropTypes from "prop-types";
 
 function NavbarItem({ text, path }) {
   return (
@@ -9,6 +10,11 @@ function NavbarItem({ text, path }) {
       </Typography>
     </NavLink>
   )
+}
+
+NavbarItem.propTypes = {
+  text: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
 }
 
 export default function Header() {
@@ -21,16 +27,17 @@ export default function Header() {
         <Toolbar sx={{
           flexShrink: 1,
           display: 'flex',
-          gap: 2,
+          gap: 6,
           justifyContent: 'center',
           alignItems: 'center',
           textAlign: 'center',
         }}
         >
           <NavbarItem path="/home" text="Home" />
-          <NavbarItem path="/login-signup" text="Login/Signup" />
+          <NavbarItem path="/login" text="Login" />
+          <NavbarItem path="/signup" text="Signup" />
           <NavbarItem path="/browse" text="Browse" />
-          <NavbarItem path="/booking" text="Booking" />
+          <NavbarItem path="/bookings" text="Bookings" />
         </Toolbar>
       </AppBar>
     </Container>
