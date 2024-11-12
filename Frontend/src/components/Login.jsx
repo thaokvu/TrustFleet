@@ -35,7 +35,7 @@ export default function Login() {
           <FormControl>
             <FormLabel>Email</FormLabel>
             <TextField
-              name="email"
+              type="email"
               value={email}
               placeholder="username@email.com"
               onChange={(e) => setEmail(e.target.value)}
@@ -45,7 +45,7 @@ export default function Login() {
           <FormControl>
             <FormLabel>Password</FormLabel>
             <TextField
-              name="password"
+              type="password"
               value={password}
               placeholder="••••••••••••••••••"
               onChange={(e) => setPassword(e.target.value)}
@@ -57,7 +57,7 @@ export default function Login() {
             fullWidth
             variant="contained"
           >
-            Submit
+            Login
           </Button>
         </Box>
       </Card>
