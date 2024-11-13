@@ -15,24 +15,29 @@ export default function Signup() {
   };
 
   return (
-    <Box sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}>
-      <Card variant="outlined" sx={{
-        width: 400,
-        p: 2,
-        boxShadow: 2,
-      }}>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Card variant="outlined"
+        sx={{
+          width: 400,
+          p: 2,
+          boxShadow: 2,
+        }}
+      >
         <Box component="form"
           onSubmit={handleSubmit}
-        sx={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-        }}>
+          sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
             Sign Up
           </Typography>
