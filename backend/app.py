@@ -87,6 +87,20 @@ def add_customer():
     db.session.commit()
     return jsonify({"message": "Customer added successfully"}), 201
 
+@app.route('/customer/<int:custID>', methods=['GET'])
+def get_customer(custID):
+    customer = Customer.query.get(custID)
+    if customer:
+        return jsonify({
+            "custID": customer.custID,
+            "FirstName": customer.FirstName,
+            "LastName": customer.LastName,
+            "Email": customer.Email,
+            "PhoneNumber": customer.PhoneNumber
+        })
+    return jsonify({"message": "Customer not found"}), 404
+
+
 # Routes for Employee
 @app.route('/employees', methods=['GET'])
 def get_employees():
