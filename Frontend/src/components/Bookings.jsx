@@ -31,16 +31,6 @@ function handleSearchClick() {
 
 return (
   <Box p={2}>
-     {/* Navbar */}
-    <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Typography variant="h5">www.TrustFleet.com</Typography>
-      <Box display="flex" gap={2}>
-        <Button startIcon={<Star />}>Home</Button>
-        <Button startIcon={<Star />}>Login/Signup</Button>
-        <Button startIcon={<Star />}>Browse</Button>
-        <Button startIcon={<Star />}>Booking</Button>
-      </Box>
-      </Box>
 
      {/* Search Bar */}
     <Box display="flex" gap={2} mt={3} mb={2}>
