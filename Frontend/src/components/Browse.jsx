@@ -22,9 +22,9 @@ export default function Browse() {
       return;
     }
     const filterBySearch = vehicleList.filter((vehicle) => {
-      if(/*vehiclename*/.toLowerCase().includes(searchTerm.toLowerCase())) {
-        return vehicle;
-      }
+      // if(/*vehiclename*/.toLowerCase().includes(searchTerm.toLowerCase())) {
+      //   return vehicle;
+      // }
       setVehicles(filterBySearch);
     })
   }

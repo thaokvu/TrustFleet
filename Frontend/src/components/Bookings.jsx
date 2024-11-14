@@ -12,29 +12,29 @@ export default function Browse() {
       pickupDate: "MM/DD/YYYY",
       dropoffDate: "MM/DD/YYYY",
     },
-  ]];
+  ];
 
-const [vehicles, setVehicles] = useState(vehicleList);
-const [searchTerm, setSearchTerm] = useState("");
+  const [vehicles, setVehicles] = useState(vehicleList);
+  const [searchTerm, setSearchTerm] = useState("");
 
- // Handle search functionality
-function handleSearchClick() {
-  if (searchTerm === "") {
-    setVehicles(vehicleList); // Show all if search term is empty
-    return;
+  // Handle search functionality
+  function handleSearchClick() {
+    if (searchTerm === "") {
+      setVehicles(vehicleList); // Show all if search term is empty
+      return;
+    }
+    const filterBySearch = vehicleList.filter((vehicle) =>
+      vehicle.make.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setVehicles(filterBySearch);
   }
-  const filterBySearch = vehicleList.filter((vehicle) =>
-    vehicle.make.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  setVehicles(filterBySearch);
-}
 
-return (
-  <Box p={2}>
+  return (
+    <Box p={2}>
 
-     {/* Search Bar */}
-    <Box display="flex" gap={2} mt={3} mb={2}>
-      <TextField
+      {/* Search Bar */}
+      <Box display="flex" gap={2} mt={3} mb={2}>
+        <TextField
           label="Search for vehicles"
           variant="outlined"
           fullWidth
@@ -46,7 +46,7 @@ return (
         </Button>
       </Box>
 
-    {/* Vehicle Card */}
+      {/* Vehicle Card */}
       <Grid container spacing={2}>
         {vehicles.map((vehicle, index) => (
           <Grid item xs={12} md={6} key={index}>
@@ -68,19 +68,19 @@ return (
                   type="date"
                   InputLabelProps={{ shrink: true }}
                   fullWidth
-                  />
+                />
                 <TextField
                   label="Dropoff Date"
                   type="date"
                   InputLabelProps={{ shrink: true }}
                   fullWidth
                 />
-                </Box>
+              </Box>
               <Box display="flex" justifyContent="flex-end" mt={2} gap={1}>
                 <Button variant="outlined">Cancel</Button>
                 <Button variant="contained" color="primary">
                   Confirm
-                  </Button>
+                </Button>
               </Box>
             </Card>
           </Grid>
@@ -89,4 +89,4 @@ return (
     </Box>
   );
 }
-  
+
