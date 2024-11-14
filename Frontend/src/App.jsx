@@ -2,7 +2,7 @@ import Header from './components/Header'
 import { Outlet } from 'react-router-dom'
 import { Container } from '@mui/material'
 
-function App() {
+export default function App() {
   return (
     <div>
       <Header />
@@ -14,5 +14,3 @@ function App() {
     </div>
   )
 }
-
-export default App

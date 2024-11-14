@@ -1,6 +1,6 @@
 const baseUrl = 'http://localhost:3000/api';
 
-async function makeRequest(method, query, body) {
+async function makeRequest({ method, query, body }) {
   const url = new URL('/api', baseUrl)
   if (query) {
     Object.entries(query).forEach(([key, value]) => {
@@ -17,4 +17,8 @@ async function makeRequest(method, query, body) {
   const response = await fetch(url, options);  
   const data = await response.json();
   return data;
+}
+
+export default {
+  makeRequest
 }
