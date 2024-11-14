@@ -1,10 +1,10 @@
 const baseUrl = 'http://localhost:3000/api';
 
-async function makeRequest({ method, query, body }) {
-  const url = new URL('/api', baseUrl)
+async function makeRequest({ url, method, query, body }) {
+  const fullUrl = new URL(url, baseUrl)
   if (query) {
     Object.entries(query).forEach(([key, value]) => {
-      url.searchParams.set(key, value);
+      fullUrl.searchParams.set(key, value);
     })
   }
   const options = {
@@ -14,7 +14,7 @@ async function makeRequest({ method, query, body }) {
     },
     body: body ? JSON.stringify(body) : null, 
   }
-  const response = await fetch(url, options);  
+  const response = await fetch(fullUrl, options);  
   const data = await response.json();
   return data;
 }

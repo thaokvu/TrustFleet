@@ -14,6 +14,7 @@ export default function Signup() {
     event.preventDefault();
     // Handle form submission
     const data = await makeRequest({
+      url: '/customer',
       method: 'POST',
       body: {
         firstName,
