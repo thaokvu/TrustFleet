@@ -61,7 +61,8 @@ def create_tables():
     else:
         print("Database already exists.")
 
-# Routes for Customer
+# CUSTOMER ROUTES
+# Get all customers
 @app.route('/customers', methods=['GET'])
 def get_customers():
     customers = Customer.query.all()
@@ -73,6 +74,7 @@ def get_customers():
         "PhoneNumber": customer.PhoneNumber
     } for customer in customers])
 
+# Add a customer
 @app.route('/customer', methods=['POST'])
 def add_customer():
     data = request.json
@@ -87,8 +89,9 @@ def add_customer():
     db.session.commit()
     return jsonify({"message": "Customer added successfully"}), 201
 
+# Get customer by ID
 @app.route('/customer/<int:custID>', methods=['GET'])
-def get_customer(custID):
+def get_customer_by_id(custID):
     customer = Customer.query.get(custID)
     if customer:
         return jsonify({
@@ -100,8 +103,50 @@ def get_customer(custID):
         })
     return jsonify({"message": "Customer not found"}), 404
 
+# Get customer by Email 
+@app.route('/customer/email/<string:email>', methods=['GET'])
+def get_customer_by_email(email):
+    customer = Customer.query.filter_by(Email=email).first()
+    if customer:
+        return jsonify({
+            "custID": customer.custID,
+            "FirstName": customer.FirstName,
+            "LastName": customer.LastName,
+            "Email": customer.Email,
+            "PhoneNumber": customer.PhoneNumber
+        })
+    return jsonify({"message": "Customer not found"}), 404
 
-# Routes for Employee
+# Get customer by last name 
+@app.route('/customer/lastname/<string:last_name>', methods=['GET'])
+def get_customer_by_lastname(last_name):
+    customers = Customer.query.filter_by(LastName=last_name).all()
+    if customers:
+        return jsonify([{
+            "custID": customer.custID,
+            "FirstName": customer.FirstName,
+            "LastName": customer.LastName,
+            "Email": customer.Email,
+            "PhoneNumber": customer.PhoneNumber
+        } for customer in customers])
+    return jsonify({"message": "No customers found with that last name"}), 404
+
+# Get customer by phone num
+@app.route('/customer/phone/<string:phone_number>', methods=['GET'])
+def get_customer_by_phone(phone_number):
+    customer = Customer.query.filter_by(PhoneNumber=phone_number).first()
+    if customer:
+        return jsonify({
+            "custID": customer.custID,
+            "FirstName": customer.FirstName,
+            "LastName": customer.LastName,
+            "Email": customer.Email,
+            "PhoneNumber": customer.PhoneNumber
+        })
+    return jsonify({"message": "Customer not found"}), 404
+
+# EMPLOYEE ROUTES 
+# Get all employees
 @app.route('/employees', methods=['GET'])
 def get_employees():
     employees = Employee.query.all()
@@ -114,6 +159,7 @@ def get_employees():
         "Position": employee.Position
     } for employee in employees])
 
+# Add employee 
 @app.route('/employee', methods=['POST'])
 def add_employee():
     data = request.json
@@ -130,7 +176,64 @@ def add_employee():
     db.session.commit()
     return jsonify({"message": "Employee added successfully"}), 201
 
-# Routes for Vehicle
+# Get employee by ID
+@app.route('/employee/<int:employee_id>', methods=['GET'])
+def get_employee_by_id(employee_id):
+    employee = Employee.query.get(employee_id)
+    if employee:
+        return jsonify({
+            "EmployeeID": employee.EmployeeID,
+            "FirstName": employee.FirstName,
+            "LastName": employee.LastName,
+            "Email": employee.Email,
+            "PhoneNumber": employee.PhoneNumber
+        })
+    return jsonify({"message": "Employee not found"}), 404
+
+# Get employee by email 
+@app.route('/employee/email/<string:email>', methods=['GET'])
+def get_employee_by_email(email):
+    employee = Employee.query.filter_by(Email=email).first()
+    if employee:
+        return jsonify({
+            "EmployeeID": employee.EmployeeID,
+            "FirstName": employee.FirstName,
+            "LastName": employee.LastName,
+            "Email": employee.Email,
+            "PhoneNumber": employee.PhoneNumber
+        })
+    return jsonify({"message": "Employee not found"}), 404
+
+# Get employee by last name 
+@app.route('/employee/lastname/<string:last_name>', methods=['GET'])
+def get_employee_by_lastname(last_name):
+    employees = Employee.query.filter_by(LastName=last_name).all()
+    if employees:
+        return jsonify([{
+            "EmployeeID": employee.EmployeeID,
+            "FirstName": employee.FirstName,
+            "LastName": employee.LastName,
+            "Email": employee.Email,
+            "PhoneNumber": employee.PhoneNumber
+        } for employee in employees])
+    return jsonify({"message": "No employees found with that last name"}), 404
+
+# Get employee by phone num
+@app.route('/employee/phone/<string:phone_number>', methods=['GET'])
+def get_employee_by_phone(phone_number):
+    employee = Employee.query.filter_by(PhoneNumber=phone_number).first()
+    if employee:
+        return jsonify({
+            "EmployeeID": employee.EmployeeID,
+            "FirstName": employee.FirstName,
+            "LastName": employee.LastName,
+            "Email": employee.Email,
+            "PhoneNumber": employee.PhoneNumber
+        })
+    return jsonify({"message": "Employee not found"}), 404
+
+# VEHICLE ROUTES 
+# Get all vehicles
 @app.route('/vehicles', methods=['GET'])
 def get_vehicles():
     vehicles = Vehicle.query.all()
@@ -147,6 +250,7 @@ def get_vehicles():
         "Condition": vehicle.Condition
     } for vehicle in vehicles])
 
+# Add a vehicle
 @app.route('/vehicle', methods=['POST'])
 def add_vehicle():
     data = request.json
@@ -167,7 +271,36 @@ def add_vehicle():
     db.session.commit()
     return jsonify({"message": "Vehicle added successfully"}), 201
 
-# Routes for RentalRecord
+# Get vehicle by VIN 
+@app.route('/vehicle/vin/<string:vin>', methods=['GET'])
+def get_vehicle_by_vin(vin):
+    vehicle = Vehicle.query.filter_by(VIN=vin).first()
+    if vehicle:
+        return jsonify({
+            "VIN": vehicle.VIN,
+            "Make": vehicle.Make,
+            "Model": vehicle.Model,
+            "Year": vehicle.Year,
+            "LicensePlate": vehicle.LicensePlate
+        })
+    return jsonify({"message": "Vehicle not found"}), 404
+
+# Get vehicle by License Plate
+@app.route('/vehicle/licenseplate/<string:license_plate>', methods=['GET'])
+def get_vehicle_by_license_plate(license_plate):
+    vehicle = Vehicle.query.filter_by(LicensePlate=license_plate).first()
+    if vehicle:
+        return jsonify({
+            "VIN": vehicle.VIN,
+            "Make": vehicle.Make,
+            "Model": vehicle.Model,
+            "Year": vehicle.Year,
+            "LicensePlate": vehicle.LicensePlate
+        })
+    return jsonify({"message": "Vehicle not found"}), 404
+
+# RENTAL RECORD ROUTES
+# Get all rental records
 @app.route('/rentals', methods=['GET'])
 def get_rentals():
     rentals = RentalRecord.query.all()
@@ -183,6 +316,7 @@ def get_rentals():
         "Status": rental.Status
     } for rental in rentals])
 
+# Add a rental record
 @app.route('/rental', methods=['POST'])
 def add_rental():
     data = request.json
@@ -199,6 +333,36 @@ def add_rental():
     db.session.add(new_rental)
     db.session.commit()
     return jsonify({"message": "Rental record added successfully"}), 201
+
+# Get rental record by customer
+@app.route('/rentalrecord/customer/<int:customer_id>', methods=['GET'])
+def get_rental_record_by_customer_id(customer_id):
+    rental_records = RentalRecord.query.filter_by(CustomerID=customer_id).all()
+    if rental_records:
+        return jsonify([{
+            "RentalID": record.RentalID,
+            "CustomerID": record.CustomerID,
+            "VehicleVIN": record.VehicleVIN,
+            "StartDate": record.StartDate,
+            "EndDate": record.EndDate,
+            "Status": record.Status
+        } for record in rental_records])
+    return jsonify({"message": "No rental records found for this customer"}), 404
+
+# Get rental record by VIN 
+@app.route('/rentalrecord/vehicle/<string:vehicle_vin>', methods=['GET'])
+def get_rental_record_by_vehicle_vin(vehicle_vin):
+    rental_records = RentalRecord.query.filter_by(VehicleVIN=vehicle_vin).all()
+    if rental_records:
+        return jsonify([{
+            "RentalID": record.RentalID,
+            "CustomerID": record.CustomerID,
+            "VehicleVIN": record.VehicleVIN,
+            "StartDate": record.StartDate,
+            "EndDate": record.EndDate,
+            "Status": record.Status
+        } for record in rental_records])
+    return jsonify({"message": "No rental records found for this vehicle"}), 404
 
 if __name__ == '__main__':
     create_tables()
