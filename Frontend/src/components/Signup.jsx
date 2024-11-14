@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { Box, Card, Typography, FormControl, FormLabel, TextField, Button } from '@mui/material';
+import { makeRequest } from '../utils/request';
 
 export default function Signup() {
   const [firstName, setFirstName] = useState('');
@@ -9,9 +10,19 @@ export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle form submission
+    const data = await makeRequest({
+      method: 'POST',
+      body: {
+        firstName,
+        lastName,
+        phoneNumber,
+        email,
+        password,
+      }
+    })
   };
 
   return (
