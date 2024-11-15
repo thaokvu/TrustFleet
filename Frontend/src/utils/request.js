@@ -19,6 +19,6 @@ async function makeRequest({ url, method, query, body }) {
   return data;
 }
 
-export default {
-  makeRequest
+export {
+  makeRequest,
 }
