@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS "Customer" (
 	"FirstName"	TEXT NOT NULL,
 	"LastName"	TEXT NOT NULL,
 	"Password"	TEXT NOT NULL,
+	"SecretOTP"	TEXT NOT NULL,
 	"Email"	TEXT NOT NULL,
 	"PhoneNumber"	INTEGER NOT NULL,
 	PRIMARY KEY("custID")
