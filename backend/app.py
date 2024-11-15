@@ -1,13 +1,15 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_sqlalchemy import SQLAlchemy
 import os
-
+import pyotp
+import qrcode
+from io import BytesIO
 
 app = Flask(__name__)
 # Set the path to the database file
 db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../Database/SecurityProject.db')
-app.config['sQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
-app.config['sQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Define Models
@@ -18,6 +20,7 @@ class Customer(db.Model):
     Password = db.Column(db.String, nullable=False)
     Email = db.Column(db.String, nullable=False)
     PhoneNumber = db.Column(db.Integer, nullable=False)
+    SecretOTP = db.Column(db.String(16), nullable=False, default=pyotp.random_base32())
 
 class Employee(db.Model):
     empID = db.Column(db.Integer, primary_key=True)
@@ -363,6 +366,36 @@ def get_rental_record_by_vehicle_vin(vehicle_vin):
             'status': record.Status
         } for record in rental_records])
     return jsonify({'message': 'No rental records found for this vehicle'}), 404
+
+# Generate QR Codes for Google Auth
+@app.route('/customer/<int:custID>/generate', methods=['GET'])
+def generate_otp(custID):
+    customer = Customer.query.get(custID)
+    if not customer:
+        return jsonify({'message': 'Customer not found'}), 404
+
+    otp = pyotp.TOTP(customer.SecretOTP)
+    uri = otp.provisioning_uri(name=customer.Email, issuer_name="YourAppName")
+    img = qrcode.make(uri)
+    buffer = BytesIO()
+    img.save(buffer)
+    buffer.seek(0)
+    return send_file(buffer, mimetype="image/png")
+
+@app.route('/customer/<int:custID>/verify', methods=['POST'])
+def verify_otp(custID):
+    data = request.json
+    otp_code = data.get('otp_code')
+
+    customer = Customer.query.get(custID)
+    if not customer:
+        return jsonify({'message': 'Customer not found'}), 404
+
+    otp = pyotp.TOTP(customer.SecretOTP)
+    if otp.verify(otp_code):
+        return jsonify({'message': 'OTP verified successfully'})
+    else:
+        return jsonify({'message': 'Invalid OTP'}), 400
 
 if __name__ == '__main__':
     create_tables()
