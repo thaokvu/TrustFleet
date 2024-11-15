@@ -1,6 +1,4 @@
-import { Box, Card, Typography, Button, Avatar, Grid } from "@mui/material";
-import { Star } from "@mui/icons-material"; // Replace with actual icons as needed
-import { useState } from "react";
+import { Box, Card, Typography, Grid } from "@mui/material";
 
 export default function Homepage() {
   return (

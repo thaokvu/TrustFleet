@@ -1,7 +1,6 @@
 import { Box, Card, Typography, TextField, Button, Grid, Avatar } from "@mui/material";
 import { useState, useEffect } from "react";
-import { Star } from "@mui/icons-material"; // Replace with actual icons
-import axios from "axios";
+import { makeRequest } from "../utils/request";
 
 export default function Browse() {
   const [vehicles, setVehicles] = useState([]);
@@ -9,12 +8,12 @@ export default function Browse() {
 
   // Fetch rentals and vehicle details by customer ID
   async function fetchRentals() {
-    try {
-      const response = await axios.get(`/customer/1/rentals`); // Replace '1' with actual customer ID
-      setVehicles(response.data);
-    } catch (error) {
-      console.error("Error fetching rentals:", error);
-    }
+    const customerId = 1; // Replace '1' with actual customer ID
+    const data = await makeRequest({
+      method: "GET",
+      url: `/customer/${customerId}/rentals`,
+    })
+    setVehicles(data);
   }
 
   useEffect(() => {
