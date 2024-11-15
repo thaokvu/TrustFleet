@@ -4,6 +4,8 @@ import os
 import pyotp
 import qrcode
 from io import BytesIO
+from pwd import get_salt, hash_password, extract_salt
+
 
 app = Flask(__name__)
 # Set the path to the database file
@@ -84,7 +86,7 @@ def add_customer():
     new_customer = Customer(
         FirstName=data['firstName'],
         LastName=data['lastName'],
-        Password=data['password'],
+        Password=hash_password(data['password'], get_salt()),
         Email=data['email'],
         PhoneNumber=data['phoneNumber']
     )
@@ -169,7 +171,7 @@ def add_employee():
     new_employee = Employee(
         FirstName=data['firstName'],
         LastName=data['lastName'],
-        Password=data['password'],
+        Password=hash_password(data['password'], get_salt()),
         Email=data['email'],
         PhoneNumber=data['phoneNumber'],
         Position=data['position'],
@@ -366,7 +368,26 @@ def get_rental_record_by_vehicle_vin(vehicle_vin):
             'status': record.Status
         } for record in rental_records])
     return jsonify({'message': 'No rental records found for this vehicle'}), 404
-
+    
+# Simple login
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+    
+    customer = Customer.query.filter_by(Email=email).first()
+    if not customer:
+        return jsonify({'message': 'User not found'}), 404
+    
+    shStored = customer.Password
+    salt = extract_salt(shStored)
+    shEntered = hash_password(password, salt)
+    
+    if shEntered == shStored:
+        return jsonify({'message': 'Login successful'})
+    return jsonify({'message': 'Invalid password'}), 401
+        
 # Generate QR Codes for Google Auth
 @app.route('/customer/<int:custID>/generate', methods=['GET'])
 def generate_otp(custID):
@@ -382,6 +403,7 @@ def generate_otp(custID):
     buffer.seek(0)
     return send_file(buffer, mimetype="image/png")
 
+# Verify the OTP from Google Auth
 @app.route('/customer/<int:custID>/verify', methods=['POST'])
 def verify_otp(custID):
     data = request.json
