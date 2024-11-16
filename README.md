@@ -13,11 +13,10 @@
 - **Payment Integration:** Integrate with payment systems to facilitate efficient and secure transactions between users and the rental service.
 
 ## Technology Stack
-- **Frontend:**
-- **Backend:**
+- **Frontend:** ReactJS, Material UI
+- **Backend:** Python, Flask, SQLAlchemy
 - **Database:** SQLite
-- **Cloud:**
-- **Security:**
+- **Security:** hashlib, PyOTP, qrcode
 - **Containerization:**
 
 ## System Architecture
