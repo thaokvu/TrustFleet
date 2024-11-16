@@ -1,13 +1,17 @@
 from flask import Flask, jsonify, request, send_file
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 import os
 import pyotp
 import qrcode
 from io import BytesIO
 from pwdutil import get_salt, hash_password, extract_salt
 
+# import logging
+# logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
+cors = CORS(app)
 # Set the path to the database file
 db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../Database/SecurityProject.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
@@ -61,7 +65,8 @@ class RentalRecord(db.Model):
 # Initialize Database
 def create_tables():
     if not os.path.exists('securityProject.db'):
-        db.create_all()
+        with app.app_context():
+            db.create_all()
         print('Database and tables created.')
     else:
         print('Database already exists.')

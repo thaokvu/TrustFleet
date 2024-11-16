@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:3000/api';
+const baseUrl = 'http://localhost:4000';
 
 async function makeRequest({ url, method, query, body }) {
   const fullUrl = new URL(url, baseUrl)
@@ -13,6 +13,7 @@ async function makeRequest({ url, method, query, body }) {
       'Content-Type': 'application/json',
     },
     body: body ? JSON.stringify(body) : null, 
+    mode: 'cors',
   }
   const response = await fetch(fullUrl, options);  
   const data = await response.json();
