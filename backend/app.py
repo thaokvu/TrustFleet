@@ -4,7 +4,7 @@ import os
 import pyotp
 import qrcode
 from io import BytesIO
-from pwd import get_salt, hash_password, extract_salt
+from pw_utils import get_salt, hash_password, extract_salt
 
 
 app = Flask(__name__)
