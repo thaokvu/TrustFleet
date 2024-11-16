@@ -3,54 +3,34 @@ import { useState, useEffect } from "react";
 import { makeRequest } from "../utils/request";
 
 export default function Browse() {
-  const [vehicles, setVehicles] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [rentals, setRentals] = useState([]);
 
   // Fetch rentals and vehicle details by customer ID
   async function fetchRentals() {
-    const customerId = 1; // Replace '1' with actual customer ID
+    const customerId = localStorage.getItem('customerId'); // Replace '1' with actual customer ID
     const data = await makeRequest({
       method: "GET",
-      url: `/customer/${customerId}/rentals`,
+      url: `/rentalrecord/customer/${customerId}`,
     })
-    setVehicles(data);
+    data.async
+    const mergedData = await Promise.all(data.map(async (rental) => {
+      const vehicle = await makeRequest({
+        method: "GET",
+        url: `/vehicle/vin/${rental.vehicleVIN}`,
+      })
+      return { ...rental, vehicle };
+    }))
+    setRentals(mergedData);
   }
 
   useEffect(() => {
     fetchRentals();
   }, []);
 
-  // Handle search functionality
-  function handleSearchClick() {
-    if (searchTerm === "") {
-      fetchRentals(); // Reload all vehicles if search term is empty
-      return;
-    }
-    const filterBySearch = vehicles.filter((rental) =>
-      rental.vehicle.make.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setVehicles(filterBySearch);
-  }
-
   return (
     <Box p={2}>
-      {/* Search Bar */}
-      <Box display="flex" gap={2} mt={3} mb={2}>
-        <TextField
-          label="Search for vehicles"
-          variant="outlined"
-          fullWidth
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <Button variant="contained" color="primary" onClick={handleSearchClick}>
-          Search
-        </Button>
-      </Box>
-
-      {/* Vehicle Card */}
       <Grid container spacing={2}>
-        {vehicles.map((rental, index) => (
+        {rentals.map((rental, index) => (
           <Grid item xs={12} md={6} key={index}>
             <Card variant="outlined" sx={{ p: 2 }}>
               <Box display="flex" alignItems="center" mb={2}>
@@ -59,7 +39,7 @@ export default function Browse() {
                   <Typography variant="h6">
                     {rental.vehicle.make} {rental.vehicle.model} ({rental.vehicle.year})
                   </Typography>
-                  <Typography color="textSecondary">{rental.vehicle.status}</Typography>
+                  <Typography color="textSecondary">{rental.status}</Typography>
                 </Box>
               </Box>
               <Box mb={2} display="flex" flexDirection="column">

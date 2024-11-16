@@ -1,13 +1,18 @@
 import { Box, Card, FormControl, FormLabel, Typography, TextField, Button } from "@mui/material"
 import { useState } from "react"
+import { makeRequest } from "../utils/request"
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // TODO
+    const data = await makeRequest({
+      method: "GET",
+      url: `/customer/email/${email}`,
+    })
+    localStorage.setItem('customerId', data.custID)
   }
 
   return (
