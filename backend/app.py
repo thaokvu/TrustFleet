@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from datetime import date
 import os
 import pyotp
 import qrcode
@@ -331,8 +332,8 @@ def get_rentals():
 def add_rental():
     data = request.json
     new_rental = RentalRecord(
-        Start_Date=data['startDate'],
-        End_Date=data.get('endDate'),
+        Start_Date=date.fromisoformat(data['startDate']),
+        End_Date=date.fromisoformat(data.get('endDate')),
         Miles=data.get('miles'),
         InitialCondition=data['initialCondition'],
         ReturnCondition=data.get('returnCondition'),
@@ -347,14 +348,14 @@ def add_rental():
 # Get rental record by customer
 @app.route('/rentalrecord/customer/<int:customer_id>', methods=['GET'])
 def get_rental_record_by_customer_id(customer_id):
-    rental_records = RentalRecord.query.filter_by(CustomerID=customer_id).all()
+    rental_records = RentalRecord.query.filter_by(FK_Cus=customer_id).all()
     if rental_records:
         return jsonify([{
-            'rentalID': record.RentalID,
-            'customerID': record.CustomerID,
-            'vehicleVIN': record.VehicleVIN,
-            'startDate': record.StartDate,
-            'endDate': record.EndDate,
+            'rentalID': record.RecordID,
+            'customerID': record.FK_Cus,
+            'vehicleVIN': record.FK_Vehicle,
+            'startDate': record.Start_Date,
+            'endDate': record.End_Date,
             'status': record.Status
         } for record in rental_records])
     return jsonify({'message': 'No rental records found for this customer'}), 404

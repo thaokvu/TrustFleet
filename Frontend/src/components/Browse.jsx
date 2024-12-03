@@ -1,12 +1,11 @@
-import { Box, Card, FormControl, FormLabel, Typography, TextField, Button, Autocomplete } from "@mui/material"
-import { useState } from "react"
+import { Box, Card, Typography, TextField, Button } from "@mui/material"
+import { useEffect, useState } from "react"
 import { makeRequest } from '../utils/request';
 
 export default function Browse() {
 
   const [vehicles, setVehicles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [myOptions, setMyOptions] = useState([]);
 
   //filter fetched vehicles by the search term
   async function handleSearchClick() {
@@ -26,7 +25,30 @@ export default function Browse() {
       } else if (vehicle.model.toLowerCase().includes(searchTerm.toLowerCase())) {
         return vehicle;
       }
-      setVehicles(filterBySearch);
+    })
+    setVehicles(filterBySearch);
+  }
+
+  useEffect(() => {
+    handleSearchClick();
+  }, [searchTerm])
+
+  async function handleSubmit(e, vehicle) {
+    e.preventDefault();
+    const customerId = parseInt(localStorage.getItem('customerId'));
+    const data = {
+      startDate: e.target.startDate.value,
+      endDate: e.target.endDate.value,
+      miles: vehicle.miles,
+      initialCondition: vehicle.condition,
+      FKCus: customerId,
+      FKVehicle: vehicle.vIN,
+      status: vehicle.status,
+    }
+    await makeRequest({
+      url: '/rental',
+      method: 'POST',
+      body: data
     })
   }
 
@@ -40,41 +62,62 @@ export default function Browse() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <Button variant="contained" color="primary" onClick={handleSearchClick}>
-          Search
-        </Button>
       </Box>
-      {vehicles.map(function (data) {
-        return (
-          <Card key={data.vIN} variant="outlined"
-            sx={{
-              width: 400,
-              p: 2,
-              boxShadow: 2,
-            }}>
-            <Box
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '30px',
+      }}>
+        {vehicles.map(function (data) {
+          return (
+            <Card key={data.vIN} variant="outlined"
               sx={{
-              width:'100%',
-            display: 'flex',
-            flexDirection: 'column',
-            }}
-          >
-
-            <Typography variant="h5" sx={{ textAlign: 'left' }}>
-              {data.year} {data.model} {data.make}
-            </Typography>
-            <Button
-              variant="contained"
-            >
-              <Typography variant="h5">
-                Rent
-              </Typography>
-            </Button>
-
-          </Box>
-        </Card >
-      )
-})}
+                width: 400,
+                p: 2,
+                boxShadow: 2,
+              }}>
+              <form onSubmit={e => handleSubmit(e, data)}>
+                <Box
+                  sx={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '10px',
+                  }}
+                >
+                  <Typography variant="h5" sx={{ textAlign: 'left' }}>
+                    {data.year} {data.model} {data.make}
+                  </Typography>
+                  <TextField
+                    label="Pickup Date"
+                    type="date"
+                    name="startDate"
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth
+                  />
+                  <TextField
+                    label="Dropoff Date"
+                    type="date"
+                    name="endDate"
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth
+                  />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                  >
+                    <Typography variant="h5">
+                      Rent
+                    </Typography>
+                  </Button>
+                </Box>
+              </form>
+            </Card >
+          )
+        })}
+      </div>
     </>
   )
 }

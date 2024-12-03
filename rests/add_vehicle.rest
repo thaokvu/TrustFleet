@@ -1,0 +1,15 @@
+POST http://localhost:4000/vehicle
+Content-Type: application/json
+
+{
+  "vIN": 345,
+  "status": "Available",
+  "type": "Sedan",
+  "make": "Toyota",
+  "model": "Corolla",
+  "year": "2001",
+  "licensePlate": "1234",
+  "MPG": 25.0,
+  "miles": 100000,
+  "condition": "Good"
+}
