@@ -19,6 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+
 # Define Models
 class Customer(db.Model):
     custID = db.Column(db.Integer, primary_key=True)
@@ -29,6 +30,7 @@ class Customer(db.Model):
     PhoneNumber = db.Column(db.Integer, nullable=False)
     SecretOTP = db.Column(db.String(16), nullable=False, default=pyotp.random_base32())
 
+
 class Employee(db.Model):
     empID = db.Column(db.Integer, primary_key=True)
     FirstName = db.Column(db.String, nullable=False)
@@ -38,6 +40,7 @@ class Employee(db.Model):
     PhoneNumber = db.Column(db.Integer, nullable=False)
     Position = db.Column(db.String, nullable=False)
     FK_Employee = db.Column(db.Integer, db.ForeignKey('employee.empID'))
+
 
 class Vehicle(db.Model):
     VIN = db.Column(db.Integer, primary_key=True)
@@ -52,6 +55,7 @@ class Vehicle(db.Model):
     Condition = db.Column(db.String, nullable=False)
     FK_Mechanic = db.Column(db.Integer, db.ForeignKey('employee.empID'))
 
+
 class RentalRecord(db.Model):
     RecordID = db.Column(db.Integer, primary_key=True)
     Start_Date = db.Column(db.Date, nullable=False)
@@ -63,6 +67,7 @@ class RentalRecord(db.Model):
     FK_Vehicle = db.Column(db.Integer, db.ForeignKey('vehicle.VIN'))
     Status = db.Column(db.String, default='active', nullable=False)
 
+
 # Initialize Database
 def create_tables():
     if not os.path.exists('securityProject.db'):
@@ -71,6 +76,7 @@ def create_tables():
         print('Database and tables created.')
     else:
         print('Database already exists.')
+
 
 # CUSTOMER ROUTES
 # Get all customers
@@ -85,6 +91,7 @@ def get_customers():
         'phoneNumber': customer.PhoneNumber
     } for customer in customers])
 
+
 # Add a customer
 @app.route('/customer', methods=['POST'])
 def add_customer():
@@ -98,7 +105,16 @@ def add_customer():
     )
     db.session.add(new_customer)
     db.session.commit()
-    return jsonify({'message': 'customer added successfully'}), 201
+    
+    # Generate QR code to link OTP to Google Authenticator Service
+    otp = pyotp.TOTP(new_customer.SecretOTP)
+    uri = otp.provisioning_uri(name=new_customer.Email, issuer_name="YourAppName")
+    img = qrcode.make(uri)
+    buffer = BytesIO()
+    img.save(buffer)
+    buffer.seek(0)
+    return send_file(buffer, mimetype="image/png")
+
 
 # Get customer by ID
 @app.route('/customer/<int:custID>', methods=['GET'])
@@ -114,7 +130,8 @@ def get_customer_by_id(custID):
         })
     return jsonify({'message': 'customer not found'}), 404
 
-# Get customer by Email 
+
+# Get customer by Email
 @app.route('/customer/email/<string:email>', methods=['GET'])
 def get_customer_by_email(email):
     customer = Customer.query.filter_by(Email=email).first()
@@ -128,7 +145,8 @@ def get_customer_by_email(email):
         })
     return jsonify({'message': 'customer not found'}), 404
 
-# Get customer by last name 
+
+# Get customer by last name
 @app.route('/customer/lastname/<string:last_name>', methods=['GET'])
 def get_customer_by_lastname(last_name):
     customers = Customer.query.filter_by(LastName=last_name).all()
@@ -141,6 +159,7 @@ def get_customer_by_lastname(last_name):
             'phoneNumber': customer.PhoneNumber
         } for customer in customers])
     return jsonify({'message': 'No customers found with that last name'}), 404
+
 
 # Get customer by phone num
 @app.route('/customer/phone/<string:phone_number>', methods=['GET'])
@@ -156,7 +175,8 @@ def get_customer_by_phone(phone_number):
         })
     return jsonify({'message': 'customer not found'}), 404
 
-# EMPLOYEE ROUTES 
+
+# EMPLOYEE ROUTES
 # Get all employees
 @app.route('/employees', methods=['GET'])
 def get_employees():
@@ -170,7 +190,8 @@ def get_employees():
         'position': employee.Position
     } for employee in employees])
 
-# Add employee 
+
+# Add employee
 @app.route('/employee', methods=['POST'])
 def add_employee():
     data = request.json
@@ -187,6 +208,7 @@ def add_employee():
     db.session.commit()
     return jsonify({'message': 'employee added successfully'}), 201
 
+
 # Get employee by ID
 @app.route('/employee/<int:employee_id>', methods=['GET'])
 def get_employee_by_id(employee_id):
@@ -201,7 +223,8 @@ def get_employee_by_id(employee_id):
         })
     return jsonify({'message': 'employee not found'}), 404
 
-# Get employee by email 
+
+# Get employee by email
 @app.route('/employee/email/<string:email>', methods=['GET'])
 def get_employee_by_email(email):
     employee = Employee.query.filter_by(Email=email).first()
@@ -215,7 +238,8 @@ def get_employee_by_email(email):
         })
     return jsonify({'message': 'employee not found'}), 404
 
-# Get employee by last name 
+
+# Get employee by last name
 @app.route('/employee/lastname/<string:last_name>', methods=['GET'])
 def get_employee_by_lastname(last_name):
     employees = Employee.query.filter_by(LastName=last_name).all()
@@ -228,6 +252,7 @@ def get_employee_by_lastname(last_name):
             'phoneNumber': employee.PhoneNumber
         } for employee in employees])
     return jsonify({'message': 'No employees found with that last name'}), 404
+
 
 # Get employee by phone num
 @app.route('/employee/phone/<string:phone_number>', methods=['GET'])
@@ -243,13 +268,14 @@ def get_employee_by_phone(phone_number):
         })
     return jsonify({'message': 'employee not found'}), 404
 
-# VEHICLE ROUTES 
+
+# VEHICLE ROUTES
 # Get all vehicles
 @app.route('/vehicles', methods=['GET'])
 def get_vehicles():
     vehicles = Vehicle.query.all()
     return jsonify([{
-        'vIN': vehicle.VIN,
+        'VIN': vehicle.VIN,
         'status': vehicle.Status,
         'type': vehicle.Type,
         'make': vehicle.Make,
@@ -261,12 +287,13 @@ def get_vehicles():
         'condition': vehicle.Condition
     } for vehicle in vehicles])
 
+
 # Add a vehicle
 @app.route('/vehicle', methods=['POST'])
 def add_vehicle():
     data = request.json
     new_vehicle = Vehicle(
-        VIN=data['vIN'],
+        VIN=data['VIN'],
         Status=data['status'],
         Type=data['type'],
         Make=data['make'],
@@ -282,13 +309,14 @@ def add_vehicle():
     db.session.commit()
     return jsonify({'message': 'vehicle added successfully'}), 201
 
-# Get vehicle by VIN 
+
+# Get vehicle by VIN
 @app.route('/vehicle/vin/<string:vin>', methods=['GET'])
 def get_vehicle_by_vin(vin):
     vehicle = Vehicle.query.filter_by(VIN=vin).first()
     if vehicle:
         return jsonify({
-            'vIN': vehicle.VIN,
+            'VIN': vehicle.VIN,
             'make': vehicle.Make,
             'model': vehicle.Model,
             'year': vehicle.Year,
@@ -296,19 +324,21 @@ def get_vehicle_by_vin(vin):
         })
     return jsonify({'message': 'vehicle not found'}), 404
 
+
 # Get vehicle by License Plate
 @app.route('/vehicle/licenseplate/<string:license_plate>', methods=['GET'])
 def get_vehicle_by_license_plate(license_plate):
     vehicle = Vehicle.query.filter_by(LicensePlate=license_plate).first()
     if vehicle:
         return jsonify({
-            'vIN': vehicle.VIN,
+            'VIN': vehicle.VIN,
             'make': vehicle.Make,
             'model': vehicle.Model,
             'year': vehicle.Year,
             'licensePlate': vehicle.LicensePlate
         })
     return jsonify({'message': 'vehicle not found'}), 404
+
 
 # RENTAL RECORD ROUTES
 # Get all rental records
@@ -326,6 +356,7 @@ def get_rentals():
         'FKVehicle': rental.FK_Vehicle,
         'status': rental.Status
     } for rental in rentals])
+
 
 # Add a rental record
 @app.route('/rental', methods=['POST'])
@@ -345,6 +376,7 @@ def add_rental():
     db.session.commit()
     return jsonify({'message': 'rental record added successfully'}), 201
 
+
 # Get rental record by customer
 @app.route('/rentalrecord/customer/<int:customer_id>', methods=['GET'])
 def get_rental_record_by_customer_id(customer_id):
@@ -360,7 +392,8 @@ def get_rental_record_by_customer_id(customer_id):
         } for record in rental_records])
     return jsonify({'message': 'No rental records found for this customer'}), 404
 
-# Get rental record by VIN 
+
+# Get rental record by VIN
 @app.route('/rentalrecord/vehicle/<string:vehicle_vin>', methods=['GET'])
 def get_rental_record_by_vehicle_vin(vehicle_vin):
     rental_records = RentalRecord.query.filter_by(VehicleVIN=vehicle_vin).all()
@@ -374,40 +407,26 @@ def get_rental_record_by_vehicle_vin(vehicle_vin):
             'status': record.Status
         } for record in rental_records])
     return jsonify({'message': 'No rental records found for this vehicle'}), 404
-    
+
+
 # Simple login
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
     email = data.get('email')
     password = data.get('password')
-    
+
     customer = Customer.query.filter_by(Email=email).first()
     if not customer:
         return jsonify({'message': 'User not found'}), 404
-    
+
     shStored = customer.Password
     salt = extract_salt(shStored)
     shEntered = hash_password(password, salt)
-    
+
     if shEntered == shStored:
         return jsonify({'message': 'Login successful'})
     return jsonify({'message': 'Invalid password'}), 401
-        
-# Generate QR Codes for Google Auth
-@app.route('/customer/<int:custID>/generate', methods=['GET'])
-def generate_otp(custID):
-    customer = Customer.query.get(custID)
-    if not customer:
-        return jsonify({'message': 'Customer not found'}), 404
-
-    otp = pyotp.TOTP(customer.SecretOTP)
-    uri = otp.provisioning_uri(name=customer.Email, issuer_name="YourAppName")
-    img = qrcode.make(uri)
-    buffer = BytesIO()
-    img.save(buffer)
-    buffer.seek(0)
-    return send_file(buffer, mimetype="image/png")
 
 # Verify the OTP from Google Auth
 @app.route('/customer/<int:custID>/verify', methods=['POST'])
@@ -424,6 +443,7 @@ def verify_otp(custID):
         return jsonify({'message': 'OTP verified successfully'})
     else:
         return jsonify({'message': 'Invalid OTP'}), 400
+
 
 if __name__ == '__main__':
     create_tables()
