@@ -50,30 +50,6 @@ export default function Browse() {
                   {rental.endDate ? new Date(rental.endDate).toLocaleDateString() : "Ongoing"}
                 </Typography>
               </Box>
-              <Box display="flex" gap={2}>
-                <TextField
-                  label="Pickup Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                  value={rental.startDate ? rental.startDate.split("T")[0] : ""}
-                  disabled
-                />
-                <TextField
-                  label="Dropoff Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                  value={rental.endDate ? rental.endDate.split("T")[0] : ""}
-                  disabled
-                />
-              </Box>
-              <Box display="flex" justifyContent="flex-end" mt={2} gap={1}>
-                <Button variant="outlined">Cancel</Button>
-                <Button variant="contained" color="primary">
-                  Confirm
-                </Button>
-              </Box>
             </Card>
           </Grid>
         ))}

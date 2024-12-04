@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Box, Card, Typography, FormControl, FormLabel, TextField, Button } from '@mui/material';
 import { makeRequest } from '../utils/request';
+import Notification from './Notification';
 
 export default function Signup() {
   const [firstName, setFirstName] = useState('');
@@ -9,6 +10,8 @@ export default function Signup() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [qrcodeSrc, setQrcodeSrc] = useState('');
+  const [notif, setNotif] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -23,7 +26,10 @@ export default function Signup() {
         email,
         password,
       }
-    })
+    });
+    // set qrcode url
+    setQrcodeSrc(URL.createObjectURL(data));
+    setNotif("You are signed up!. Scan the QR code with your auth app:")
   };
 
   return (
@@ -32,6 +38,8 @@ export default function Signup() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        flexDirection: 'column',
+        gap: '50px',
       }}
     >
       <Card variant="outlined"
@@ -112,6 +120,17 @@ export default function Signup() {
           </Button>
         </Box>
       </Card>
+      {qrcodeSrc && (
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "10px",
+        }}>
+          <img src={qrcodeSrc} alt="QR Code" />
+        </div>
+      )}
+      <Notification text={notif} />
     </Box>
   )
 }

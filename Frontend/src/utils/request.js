@@ -16,7 +16,16 @@ async function makeRequest({ url, method, query, body }) {
     mode: 'cors',
   }
   const response = await fetch(fullUrl, options);  
-  const data = await response.json();
+  if (response.status >= 400) {
+    throw new Error(`Code ${response.status}: ${response.statusText}`);
+  }
+  const contentType = response.headers.get('Content-Type');
+  let data;
+  if (contentType.includes('application/json')) {
+    data = await response.json();
+  } else if (contentType.includes('image')) {
+    data = await response.blob();
+  }
   return data;
 }
 
