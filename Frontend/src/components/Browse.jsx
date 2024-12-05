@@ -42,8 +42,8 @@ export default function Browse() {
       miles: vehicle.miles,
       initialCondition: vehicle.condition,
       FKCus: customerId,
-      FKVehicle: vehicle.vIN,
-      status: vehicle.status,
+      FKVehicle: vehicle.VIN,
+      status: "Unavailable",
     }
     await makeRequest({
       url: '/rental',
@@ -71,7 +71,7 @@ export default function Browse() {
       }}>
         {vehicles.map(function (data) {
           return (
-            <Card key={data.vIN} variant="outlined"
+            <Card key={data.VIN} variant="outlined"
               sx={{
                 width: 400,
                 p: 2,
