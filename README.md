@@ -30,7 +30,7 @@ deactivate
 ```
 cd backend
 pip install -r requirements.txt
-flask run
+python app.py
 ```
 
 ### Start Frontend:
