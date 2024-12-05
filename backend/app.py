@@ -106,10 +106,10 @@ def add_customer():
     )
     db.session.add(new_customer)
     db.session.commit()
-    
+
     # Generate QR code to link OTP to Google Authenticator Service
     otp = pyotp.TOTP(new_customer.SecretOTP)
-    uri = otp.provisioning_uri(name=new_customer.Email, issuer_name="YourAppName")
+    uri = otp.provisioning_uri(name=new_customer.Email, issuer_name="Trust Fleet")
     img = qrcode.make(uri)
     buffer = BytesIO()
     img.save(buffer)
