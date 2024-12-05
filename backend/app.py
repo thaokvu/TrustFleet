@@ -28,7 +28,7 @@ class Customer(db.Model):
     Password = db.Column(db.String, nullable=False)
     Email = db.Column(db.String, nullable=False)
     PhoneNumber = db.Column(db.Integer, nullable=False)
-    SecretOTP = db.Column(db.String(16), nullable=False, default=pyotp.random_base32())
+    SecretOTP = db.Column(db.String(16), nullable=False)
 
 
 class Employee(db.Model):
@@ -101,7 +101,8 @@ def add_customer():
         LastName=data['lastName'],
         Password=hash_password(data['password'], get_salt()),
         Email=data['email'],
-        PhoneNumber=data['phoneNumber']
+        PhoneNumber=data['phoneNumber'],
+        SecretOTP=pyotp.random_base32()
     )
     db.session.add(new_customer)
     db.session.commit()
